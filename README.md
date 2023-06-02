@@ -19,7 +19,7 @@ Usage example:
 git clone git@github.com:hairtail/collect-notes.git
 cd collect-notes
 npm ci
-ACCOUNT=myaccountname ENDPOINT="http://localhost:8021 OUTPUT="/home/ps/ironfish/collect.log" npm start
+ACCOUNT=myaccountname ENDPOINT="http://localhost:8021" OUTPUT="/home/ps/ironfish/collect.log" npm start
 ```
 
 Notes: 

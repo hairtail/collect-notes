@@ -3,6 +3,8 @@ import { CreateTransactionRequest } from './interface';
 import RpcService from './service/rpcService';
 import * as moment from 'moment';
 
+const sleep = (msec: number) =>
+  new Promise(resolve => setTimeout(resolve, msec));
 const account = process.env.ACCOUNT;
 const rpcUrl = process.env.ENDPOINT;
 const output = process.env.OUTPUT;
@@ -31,13 +33,22 @@ if (!output) {
 async function main(account: string, rpcUrl: string, output: string) {
   const file = await fs.open(output, 'w');
   file.appendFile(`Account,Date,TransactionHash\n`);
-  await main_loop(account, rpcUrl, file);
-  setInterval(() => main_loop(account, rpcUrl, file), 20 * 60 * 1000);
-  await file.close();
+  while (true) {
+    try {
+      await main_loop(account, rpcUrl, file);
+      await sleep(20 * 60 * 1000);
+    } catch (e) {
+      // there should be an error if all note.value > 1 IRON, stop here
+      console.error(e);
+      break;
+    }
+  }
+  file.close();
   process.exit(0);
 }
 
 async function main_loop(account: string, rpcUrl: string, file: fs.FileHandle) {
+  console.log('Start collecting now');
   const rpcService = new RpcService(rpcUrl);
 
   /**
@@ -76,6 +87,7 @@ async function main_loop(account: string, rpcUrl: string, file: fs.FileHandle) {
   }
   if (amount === 0n || createTx.notes?.length === 0) {
     console.log('No spendable notes whos value are less than 1 IRON');
+    return;
   }
 
   createTx.outputs[0].amount = (amount - 10n).toString();
