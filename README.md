@@ -6,7 +6,7 @@ Small CLI app that consolidate many small notes to a big one via a transaction t
 How this app works?
 - get account address of the input account name via rpc call `getPublicKey`
 - get spendable notes of this account via rpc call `getNotes`
-- select notes whos value are less than 1 IRON
+- select notes whos value are less than 100 IRON
 - create a transaction to account itself with notes above via rpc call `createTransaction`
 - sign and broadcast transaction to the network via rpc call `postTransaction`
 

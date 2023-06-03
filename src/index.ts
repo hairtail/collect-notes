@@ -43,7 +43,7 @@ async function main(account: string, rpcUrl: string, output: string) {
       break;
     }
   }
-  file.close();
+  await file.close();
   process.exit(0);
 }
 
@@ -80,13 +80,13 @@ async function main_loop(account: string, rpcUrl: string, file: fs.FileHandle) {
     notes: [],
   };
   for (const note of spendableNotes.notes) {
-    if (BigInt(note.value) <= 100000000n && !note.spent) {
+    if (BigInt(note.value) <= 10000000000n && !note.spent) {
       createTx.notes?.push(note.noteHash);
       amount += BigInt(note.value);
     }
   }
   if (amount === 0n || createTx.notes?.length === 0) {
-    console.log('No spendable notes whos value are less than 1 IRON');
+    console.log('No spendable notes whos value are less than 100 IRON');
     return;
   }
 
